@@ -84,10 +84,12 @@ const getCompletedStudents = (course: Course): Student[] =>{
     })
     return completed
 }
-const calculateAverageScore = (course: Course): number  =>{
+const calculateAverageScore = (course: Course): number|null  =>{
     const {students} = course;
     const completed:Student[] = getCompletedStudents(course);
-
+    if(completed.length === 0){
+        return null;
+    }
     const avg =completed.reduce((sum,curr)=> sum + (curr.finalScore || 0),0)/completed.length;
     return avg
 }
@@ -96,12 +98,13 @@ const printCourseReport = (manager: CourseManager): void =>{
     let coursesCount = 0;
     courses.forEach((course: Course): void => {
         const completed:number = getCompletedStudents(course).length
-        const avg:number = calculateAverageScore(course)
+        const avg:any = calculateAverageScore(course)
+        
         coursesCount++
         console.log(`${coursesCount}. Khoa: ${course.title} (GV: ${course.instructor})`);
         console.log(`Tong hoc vien: ${course.students.length}`)
         console.log(`Hoan thanh: ${completed} hoc vien`)
-        console.log(`Trung binh diem: ${avg===0?"N/A":avg}`)
+        console.log(`Trung binh diem: ${typeof avg === "number"?avg:"N/A"}`)
         console.log(`Trang Thai: ${course.isActive? "Dang mo":"Da dong"}`)
         console.log(`=============================================`)
     })
